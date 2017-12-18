@@ -5,11 +5,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DbMetadata.Models;
+using DbMetadata.Models.Metadata;
 
 namespace DbMetadata.Controllers
 {
     public class HomeController : Controller
     {
+        private MetadataContext db;
+        public HomeController(MetadataContext context)
+        {
+            db = context;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -32,6 +39,21 @@ namespace DbMetadata.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult Organization()
+        {
+            return RedirectToAction("Index", "OrganizationsController");
+        }
+
+        public IActionResult Department()
+        {
+            return RedirectToAction("Index", "DepartmentsController");
+        }
+
+        public IActionResult Project()
+        {
+            return RedirectToAction("Index", "ProjectsController");
         }
     }
 }
