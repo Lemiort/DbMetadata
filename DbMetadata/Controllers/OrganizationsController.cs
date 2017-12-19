@@ -33,6 +33,7 @@ namespace DbMetadata.Controllers
             }
 
             var organization = await _context.Organizations
+                .Include(org=>org.Properties)
                 .SingleOrDefaultAsync(m => m.OrganizationId == id);
             if (organization == null)
             {
