@@ -33,7 +33,7 @@ namespace DbMetadata.Controllers
             }
 
             var organization = await _context.Organizations
-                .Include(org=>org.Properties)
+                .Include(o=>o.Properties)
                 .SingleOrDefaultAsync(m => m.OrganizationId == id);
             if (organization == null)
             {
@@ -48,6 +48,41 @@ namespace DbMetadata.Controllers
         {
             return View();
         }
+
+        //// GET: Organizations/Create
+        //public IActionResult CreateProperty(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var organization = _context.Organizations
+        //        .Include(o => o.Properties)
+        //        .SingleOrDefaultAsync(m => m.OrganizationId == id);
+
+        //    var property = new OrganizationProperty() { OwnerOrganization = organization.Result};
+        //    organization.Result.Properties.Add(property);
+        //    _context.Attach(property);
+        //    return View(property);
+        //}
+
+        //// POST: Organizations/Create
+        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> CreateProperty(OrganizationProperty model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        model.OwnerOrganization = _context.Organizations.Find(model.OwnerOrganization.OrganizationId);
+        //        _context.Add(model);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(model);
+        //}
 
         // POST: Organizations/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 

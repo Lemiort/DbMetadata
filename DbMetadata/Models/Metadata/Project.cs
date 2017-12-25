@@ -13,7 +13,7 @@ namespace DbMetadata.Models.Metadata
 
         public string Name { get; set; }
 
-        public List<Property> Properties { get; set; }
+        public List<ProjectProperty> Properties { get; set; }
 
         public Project()
         {

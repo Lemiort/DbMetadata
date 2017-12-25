@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 
 namespace DbMetadata.Models.Metadata
 {
-    public class Property
+    public class DepartmentProperty
     {
-        public int PropertyId { get; set; }
+        public int DepartmentPropertyId { get; set; }
+
+        public Department OwnerDepartment { get; set; }
 
         public string Title { get; set; }
 

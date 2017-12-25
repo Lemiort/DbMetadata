@@ -36,6 +36,24 @@ namespace DbMetadata.Migrations
                     b.ToTable("Departments");
                 });
 
+            modelBuilder.Entity("DbMetadata.Models.Metadata.DepartmentProperty", b =>
+                {
+                    b.Property<int>("DepartmentPropertyId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("OwnerDepartmentDepartmentId");
+
+                    b.Property<string>("Title");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("DepartmentPropertyId");
+
+                    b.HasIndex("OwnerDepartmentDepartmentId");
+
+                    b.ToTable("DepartmentProperties");
+                });
+
             modelBuilder.Entity("DbMetadata.Models.Metadata.Organization", b =>
                 {
                     b.Property<int>("OrganizationId")
@@ -46,6 +64,24 @@ namespace DbMetadata.Migrations
                     b.HasKey("OrganizationId");
 
                     b.ToTable("Organizations");
+                });
+
+            modelBuilder.Entity("DbMetadata.Models.Metadata.OrganizationProperty", b =>
+                {
+                    b.Property<int>("OrganizationPropertyId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("OwnerOrganizationOrganizationId");
+
+                    b.Property<string>("Title");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("OrganizationPropertyId");
+
+                    b.HasIndex("OwnerOrganizationOrganizationId");
+
+                    b.ToTable("OrganizationProperties");
                 });
 
             modelBuilder.Entity("DbMetadata.Models.Metadata.Project", b =>
@@ -64,30 +100,22 @@ namespace DbMetadata.Migrations
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("DbMetadata.Models.Metadata.Property", b =>
+            modelBuilder.Entity("DbMetadata.Models.Metadata.ProjectProperty", b =>
                 {
-                    b.Property<int>("PropertyId")
+                    b.Property<int>("ProjectPropertyId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("DepartmentId");
-
-                    b.Property<int?>("OrganizationId");
-
-                    b.Property<int?>("ProjectId");
+                    b.Property<int?>("OwnerProjectProjectId");
 
                     b.Property<string>("Title");
 
                     b.Property<string>("Value");
 
-                    b.HasKey("PropertyId");
+                    b.HasKey("ProjectPropertyId");
 
-                    b.HasIndex("DepartmentId");
+                    b.HasIndex("OwnerProjectProjectId");
 
-                    b.HasIndex("OrganizationId");
-
-                    b.HasIndex("ProjectId");
-
-                    b.ToTable("Properties");
+                    b.ToTable("ProjectProperties");
                 });
 
             modelBuilder.Entity("DbMetadata.Models.Metadata.Department", b =>
@@ -97,6 +125,20 @@ namespace DbMetadata.Migrations
                         .HasForeignKey("OrganizationId1");
                 });
 
+            modelBuilder.Entity("DbMetadata.Models.Metadata.DepartmentProperty", b =>
+                {
+                    b.HasOne("DbMetadata.Models.Metadata.Department", "OwnerDepartment")
+                        .WithMany("Properties")
+                        .HasForeignKey("OwnerDepartmentDepartmentId");
+                });
+
+            modelBuilder.Entity("DbMetadata.Models.Metadata.OrganizationProperty", b =>
+                {
+                    b.HasOne("DbMetadata.Models.Metadata.Organization", "OwnerOrganization")
+                        .WithMany("Properties")
+                        .HasForeignKey("OwnerOrganizationOrganizationId");
+                });
+
             modelBuilder.Entity("DbMetadata.Models.Metadata.Project", b =>
                 {
                     b.HasOne("DbMetadata.Models.Metadata.Department", "DepartmentId")
@@ -104,19 +146,11 @@ namespace DbMetadata.Migrations
                         .HasForeignKey("DepartmentId1");
                 });
 
-            modelBuilder.Entity("DbMetadata.Models.Metadata.Property", b =>
+            modelBuilder.Entity("DbMetadata.Models.Metadata.ProjectProperty", b =>
                 {
-                    b.HasOne("DbMetadata.Models.Metadata.Department")
+                    b.HasOne("DbMetadata.Models.Metadata.Project", "OwnerProject")
                         .WithMany("Properties")
-                        .HasForeignKey("DepartmentId");
-
-                    b.HasOne("DbMetadata.Models.Metadata.Organization")
-                        .WithMany("Properties")
-                        .HasForeignKey("OrganizationId");
-
-                    b.HasOne("DbMetadata.Models.Metadata.Project")
-                        .WithMany("Properties")
-                        .HasForeignKey("ProjectId");
+                        .HasForeignKey("OwnerProjectProjectId");
                 });
 #pragma warning restore 612, 618
         }

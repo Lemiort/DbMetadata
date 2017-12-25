@@ -13,6 +13,6 @@ namespace DbMetadata.Models.Metadata
 
         public Organization OrganizationId { get; set; }
 
-        public List<Property> Properties { get; set; }
+        public List<DepartmentProperty> Properties { get; set; }
     }
 }

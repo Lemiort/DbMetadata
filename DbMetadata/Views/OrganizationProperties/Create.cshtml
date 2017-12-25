@@ -1,4 +1,4 @@
-﻿@model DbMetadata.Models.Metadata.Property
+﻿@model DbMetadata.Models.Metadata.OrganizationProperty
 
 @{
     ViewData["Title"] = "Create";
@@ -6,12 +6,16 @@
 
 <h2>Create</h2>
 
-<h4>Property</h4>
+<h4>OrganizationProperty</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="OwnerOrganization" class="control-label"></label>
+                <input asp-for="OwnerOrganization.OrganizationId" class="form-control" />
+            </div>
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -30,7 +34,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Organizations" asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

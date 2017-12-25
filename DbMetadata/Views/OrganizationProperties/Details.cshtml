@@ -1,14 +1,13 @@
-﻿@model DbMetadata.Models.Metadata.Property
+﻿@model DbMetadata.Models.Metadata.OrganizationProperty
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Details";
 }
 
-<h2>Delete</h2>
+<h2>Details</h2>
 
-<h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Property</h4>
+    <h4>OrganizationProperty</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -24,10 +23,8 @@
             @Html.DisplayFor(model => model.Value)
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="PropertyId" />
-        <input type="submit" value="Delete" class="btn btn-default" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.OrganizationPropertyId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
 </div>

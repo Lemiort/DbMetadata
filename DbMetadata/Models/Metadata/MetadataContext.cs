@@ -14,7 +14,11 @@ namespace DbMetadata.Models.Metadata
 
         public DbSet<Department> Departments { get; set; }
 
-        public DbSet<Property> Properties { get; set; }
+        public DbSet<OrganizationProperty> OrganizationProperties { get; set; }
+
+        public DbSet<DepartmentProperty> DepartmentProperties { get; set; }
+
+        public DbSet<ProjectProperty> ProjectProperties { get; set; }
 
 
         public MetadataContext(DbContextOptions<MetadataContext> options) :base(options) 

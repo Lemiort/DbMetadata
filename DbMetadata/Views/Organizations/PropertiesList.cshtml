@@ -1,14 +1,6 @@
-﻿@model IEnumerable<DbMetadata.Models.Metadata.Property>
+﻿@model IEnumerable<DbMetadata.Models.Metadata.OrganizationProperty>
 
-@{
-    ViewData["Title"] = "Index";
-}
 
-<h2>Index</h2>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -31,9 +23,9 @@
                 @Html.DisplayFor(modelItem => item.Value)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.PropertyId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PropertyId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PropertyId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.OrganizationPropertyId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.OrganizationPropertyId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.OrganizationPropertyId">Delete</a>
             </td>
         </tr>
 }
