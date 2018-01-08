@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DbMetadata.Models;
+using ClosedXML.Excel;
+using System.IO;
 
 namespace DbMetadata.Controllers
 {
@@ -172,5 +174,39 @@ namespace DbMetadata.Controllers
         {
             return _context.Projects.Any(e => e.ProjectId == id);
         }
+
+        public async Task<IActionResult> Download(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var project = await _context.Projects
+                .Include(m=>m.Properties)
+                .Include(m => m.OwnerDepartment.Properties)
+                .Include(m => m.OwnerDepartment.OwnerOrganization.Properties)
+                .SingleOrDefaultAsync(m => m.ProjectId == id);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            var document = new XLWorkbook(
+                Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationBasePath +
+                "..\\..\\..\\sample.xlsx");
+            var ws = document.Worksheet(1);
+            ws.Cell("A1").Value = project.OwnerDepartment.OwnerOrganization.Name;
+            ws.Cell("A2").Value = project.OwnerDepartment.Name;
+            ws.Cell("A3").Value = project.Name;
+
+            MemoryStream stream = new MemoryStream();
+            document.SaveAs(stream);
+            stream.Position = 0;
+
+            return File(stream, "application/x-msdownload", project.Name+"_project_card.xlsx");
+        }
+        //    return File(documentFile.Data, "application/x-msdownload", documentFile.Name);
+        //}
     }
 }
