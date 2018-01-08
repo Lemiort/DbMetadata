@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DbMetadata.Models.Metadata;
+using DbMetadata.Models;
 
 namespace DbMetadata.Controllers
 {
@@ -32,10 +32,17 @@ namespace DbMetadata.Controllers
                 return NotFound();
             }
 
+            
             var project = await _context.Projects
                 .Include(p=>p.OwnerDepartment)
                 .Include(p=>p.Properties)
+                .Include(p=>p.Documents)
                 .SingleOrDefaultAsync(m => m.ProjectId == id);
+            foreach(var doc in project.Documents)
+            {
+                var temp = _context.Documents.Include(m=>m.File).SingleOrDefault(m => m.DocumentId == doc.DocumentId);
+                doc.File = temp.File;
+            }
             if (project == null)
             {
                 return NotFound();

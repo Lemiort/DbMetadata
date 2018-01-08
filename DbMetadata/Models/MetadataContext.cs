@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DbMetadata.Models.Metadata
+namespace DbMetadata.Models
 {
     public class MetadataContext: DbContext
     {
@@ -20,6 +20,8 @@ namespace DbMetadata.Models.Metadata
 
         public DbSet<ProjectProperty> ProjectProperties { get; set; }
 
+        public DbSet<Document> Documents { get; set; }
+        public DbSet<DocumentFile> DocumentFiles { get; set; }
 
         public MetadataContext(DbContextOptions<MetadataContext> options) :base(options) 
         {

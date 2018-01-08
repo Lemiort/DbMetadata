@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DbMetadata.Models.Metadata
+namespace DbMetadata.Models
 {
     public class Department
     {

@@ -10,6 +10,28 @@ namespace DbMetadata.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "DocumentFiles",
+                columns: table => new
+                {
+                    DocumentFileId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Data = table.Column<byte[]>(nullable: true),
+                    ModifiedTime = table.Column<DateTime>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    PrevVersionDocumentFileId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DocumentFiles", x => x.DocumentFileId);
+                    table.ForeignKey(
+                        name: "FK_DocumentFiles_DocumentFiles_PrevVersionDocumentFileId",
+                        column: x => x.PrevVersionDocumentFileId,
+                        principalTable: "DocumentFiles",
+                        principalColumn: "DocumentFileId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Organizations",
                 columns: table => new
                 {
@@ -105,6 +127,32 @@ namespace DbMetadata.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Documents",
+                columns: table => new
+                {
+                    DocumentId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    FileDocumentFileId = table.Column<int>(nullable: true),
+                    ProjectId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Documents", x => x.DocumentId);
+                    table.ForeignKey(
+                        name: "FK_Documents_DocumentFiles_FileDocumentFileId",
+                        column: x => x.FileDocumentFileId,
+                        principalTable: "DocumentFiles",
+                        principalColumn: "DocumentFileId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Documents_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "ProjectId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProjectProperties",
                 columns: table => new
                 {
@@ -136,6 +184,21 @@ namespace DbMetadata.Migrations
                 column: "OwnerOrganizationOrganizationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DocumentFiles_PrevVersionDocumentFileId",
+                table: "DocumentFiles",
+                column: "PrevVersionDocumentFileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Documents_FileDocumentFileId",
+                table: "Documents",
+                column: "FileDocumentFileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Documents_ProjectId",
+                table: "Documents",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrganizationProperties_OwnerOrganizationOrganizationId",
                 table: "OrganizationProperties",
                 column: "OwnerOrganizationOrganizationId");
@@ -157,10 +220,16 @@ namespace DbMetadata.Migrations
                 name: "DepartmentProperties");
 
             migrationBuilder.DropTable(
+                name: "Documents");
+
+            migrationBuilder.DropTable(
                 name: "OrganizationProperties");
 
             migrationBuilder.DropTable(
                 name: "ProjectProperties");
+
+            migrationBuilder.DropTable(
+                name: "DocumentFiles");
 
             migrationBuilder.DropTable(
                 name: "Projects");

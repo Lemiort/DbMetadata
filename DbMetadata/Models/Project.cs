@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DbMetadata.Models.Metadata
+namespace DbMetadata.Models
 {
     public class Project
     {
@@ -13,7 +13,9 @@ namespace DbMetadata.Models.Metadata
 
         public string Name { get; set; }
 
-        public List<ProjectProperty> Properties { get; set; }
+        public ICollection<ProjectProperty> Properties { get; set; }
+
+        public ICollection<Document> Documents { get; set; }
 
         public Project()
         {

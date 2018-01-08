@@ -1,4 +1,4 @@
-﻿@model DbMetadata.Models.Metadata.Project
+﻿@model DbMetadata.Models.Project
 
 @{
     ViewData["Title"] = "Details";
@@ -36,6 +36,11 @@
     <a asp-controller="ProjectProperties" asp-action="Create" asp-route-id="@Model.ProjectId">Create New Property</a>
 </p>
 @{Html.RenderPartial("../ProjectProperties/Index", Model.Properties); }
+
+<p>
+    <a asp-controller="Documents" asp-action="Create" asp-route-id="@Model.ProjectId">Create New Document</a>
+</p>
+@{Html.RenderPartial("../Documents/Index", Model.Documents); }
 
 <div>
     <a asp-action="Edit" asp-route-id="@Model.ProjectId">Edit</a> |
