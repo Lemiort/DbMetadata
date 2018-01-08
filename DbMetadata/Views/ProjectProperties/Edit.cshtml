@@ -1,16 +1,18 @@
-﻿@model DbMetadata.Models.Metadata.OrganizationProperty
+﻿@model DbMetadata.Models.Metadata.ProjectProperty
 
+@{
+    ViewData["Title"] = "Edit";
+}
 
-<h4>OrganizationProperty</h4>
+<h2>Edit</h2>
+
+<h4>ProjectProperty</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="CreateProperty">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="OwnerOrganization" class="control-label"></label>
-                <input asp-for="OwnerOrganization.OrganizationId" class="form-control" />
-            </div>
+            <input type="hidden" asp-for="ProjectPropertyId" />
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -22,7 +24,7 @@
                 <span asp-validation-for="Value" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </form>
     </div>

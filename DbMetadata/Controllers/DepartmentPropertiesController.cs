@@ -19,10 +19,10 @@ namespace DbMetadata.Controllers
         }
 
         // GET: DepartmentProperties
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            //return View(await _context.DepartmentProperties.ToListAsync());
-            return RedirectToAction("Index", "Departments");
+            return View(await _context.DepartmentProperties.Include(p=>p.OwnerDepartment).ToListAsync());
+            //return RedirectToAction("Index", "Departments");
         }
 
         // GET: DepartmentProperties/Details/5
@@ -34,6 +34,7 @@ namespace DbMetadata.Controllers
             }
 
             var departmentProperty = await _context.DepartmentProperties
+                .Include(p => p.OwnerDepartment)
                 .SingleOrDefaultAsync(m => m.DepartmentPropertyId == id);
             if (departmentProperty == null)
             {

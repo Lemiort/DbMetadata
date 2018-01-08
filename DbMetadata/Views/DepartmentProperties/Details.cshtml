@@ -10,6 +10,20 @@
     <h4>DepartmentProperty</h4>
     <hr />
     <dl class="dl-horizontal">
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DepartmentPropertyId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DepartmentPropertyId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.OwnerDepartment)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.OwnerDepartment.DepartmentId)
+        </dd>
+
         <dt>
             @Html.DisplayNameFor(model => model.Title)
         </dt>

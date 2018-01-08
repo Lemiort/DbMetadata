@@ -30,14 +30,17 @@
         </dd>
     </dl>
 </div>
-<p>
-    <a asp-controller="DepartmentProperties" asp-action="Create" asp-route-id="@Model.DepartmentId">Create New Property</a>
-</p>
-@{Html.RenderPartial("../DepartmentProperties/Index", Model.Properties); }
+
 <p>
     <a asp-controller="Projects" asp-action="Create" asp-route-id="@Model.DepartmentId">Create New Project</a>
 </p>
 @{Html.RenderPartial("../Projects/Index", Model.Projects); }
+
+<p>
+    <a asp-controller="DepartmentProperties" asp-action="Create" asp-route-id="@Model.DepartmentId">Create New Property</a>
+</p>
+@{Html.RenderPartial("../DepartmentProperties/Index", Model.Properties); }
+
 <div>
     <a asp-controller="DepartmentProperties" asp-action="Edit" asp-route-id="@Model.DepartmentId">Edit</a> |
     <a asp-controller="DepartmentProperties" asp-action="Index">Back to List</a>

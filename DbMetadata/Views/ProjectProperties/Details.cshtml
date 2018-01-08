@@ -1,4 +1,4 @@
-﻿@model DbMetadata.Models.Metadata.OrganizationProperty
+﻿@model DbMetadata.Models.Metadata.ProjectProperty
 
 @{
     ViewData["Title"] = "Details";
@@ -7,22 +7,21 @@
 <h2>Details</h2>
 
 <div>
-    <h4>OrganizationProperty</h4>
+    <h4>ProjectProperty</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.OrganizationPropertyId)
+            @Html.DisplayNameFor(model => model.ProjectPropertyId)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.OrganizationPropertyId)
+            @Html.DisplayFor(model => model.ProjectPropertyId)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.OwnerOrganization)
+            @Html.DisplayNameFor(model => model.OwnerProject)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.OwnerOrganization.OrganizationId)
+            @Html.DisplayFor(model => model.OwnerProject.ProjectId)
         </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.Title)
         </dt>
@@ -38,6 +37,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.OrganizationPropertyId">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model.ProjectPropertyId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

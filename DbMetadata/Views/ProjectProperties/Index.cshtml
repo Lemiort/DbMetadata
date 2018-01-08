@@ -1,14 +1,19 @@
-﻿@model IEnumerable<DbMetadata.Models.Metadata.DepartmentProperty>
+﻿@model IEnumerable<DbMetadata.Models.Metadata.ProjectProperty>
 
 @{
     ViewData["Title"] = "Index";
 }
 
+<h4>Properties</h4>
+
+@*<p>
+    <a asp-action="Create">Create New</a>
+</p>*@
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.OwnerDepartment)
+                @Html.DisplayNameFor(model => model.OwnerProject)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Title)
@@ -23,7 +28,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.OwnerDepartment.DepartmentId)
+                @Html.DisplayFor(modelItem => item.OwnerProject.ProjectId)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
@@ -32,9 +37,9 @@
                 @Html.DisplayFor(modelItem => item.Value)
             </td>
             <td>
-                <a asp-controller="DepartmentProperties" asp-action="Edit" asp-route-id="@item.DepartmentPropertyId">Edit</a> |
-                <a asp-controller="DepartmentProperties" asp-action="Details" asp-route-id="@item.DepartmentPropertyId">Details</a> |
-                <a asp-controller="DepartmentProperties" asp-action="Delete" asp-route-id="@item.DepartmentPropertyId">Delete</a>
+                <a asp-controller="ProjectProperties" asp-action="Edit" asp-route-id="@item.ProjectPropertyId">Edit</a> |
+                <a asp-controller="ProjectProperties" asp-action="Details" asp-route-id="@item.ProjectPropertyId">Details</a> |
+                <a asp-controller="ProjectProperties" asp-action="Delete" asp-route-id="@item.ProjectPropertyId">Delete</a>
             </td>
         </tr>
 }
