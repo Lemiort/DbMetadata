@@ -12,5 +12,7 @@ namespace DbMetadata.Models.Metadata
         public string Name { get; set; }
 
         public virtual ICollection<OrganizationProperty> Properties { get; set; }
+
+        public virtual ICollection<Department> Departments { get; set; }
     }
 }

@@ -17,6 +17,12 @@
             @Html.DisplayFor(model => model.DepartmentId)
         </dd>
         <dt>
+            @Html.DisplayNameFor(model => model.OrganizationId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.OrganizationId.OrganizationId)
+        </dd>
+        <dt>
             @Html.DisplayNameFor(model => model.Name)
         </dt>
         <dd>
@@ -29,6 +35,6 @@
 </p>
 @{Html.RenderPartial("../DepartmentProperties/Index", Model.Properties); }
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.DepartmentId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="DepartmentProperties" asp-action="Edit" asp-route-id="@Model.DepartmentId">Edit</a> |
+    <a asp-controller="DepartmentProperties" asp-action="Index">Back to List</a>
 </div>

@@ -9,22 +9,22 @@ using DbMetadata.Models.Metadata;
 
 namespace DbMetadata.Controllers
 {
-    public class DepartmentsController : Controller
+    public class ProjectsController : Controller
     {
         private readonly MetadataContext _context;
 
-        public DepartmentsController(MetadataContext context)
+        public ProjectsController(MetadataContext context)
         {
             _context = context;
         }
 
-        // GET: Departments
+        // GET: Projects
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Departments.ToListAsync());
+            return View(await _context.Projects.ToListAsync());
         }
 
-        // GET: Departments/Details/5
+        // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -32,56 +32,40 @@ namespace DbMetadata.Controllers
                 return NotFound();
             }
 
-            var department = await _context.Departments
-                .Include(d=>d.Properties)
-                .Include(d=>d.OrganizationId)
-                .SingleOrDefaultAsync(m => m.DepartmentId == id);
-            if (department == null)
+            var project = await _context.Projects
+                .Include(p=>p.Properties)
+                .SingleOrDefaultAsync(m => m.ProjectId == id);
+            if (project == null)
             {
                 return NotFound();
             }
 
-            return View(department);
+            return View(project);
         }
 
-        // GET: Departments/Create
-        public IActionResult Create(int? id)
+        // GET: Projects/Create
+        public IActionResult Create()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var organization = _context.Organizations
-                .Include(o=>o.Departments)
-                .SingleOrDefaultAsync(m => m.OrganizationId == id);
-
-            var department = new Department() { OrganizationId = organization.Result };
-            organization.Result.Departments.Add(department);
-            //var property = new DepartmentProperty() { OwnerDepartment = department.Result };
-            //organization.Result.Properties.Add(property);
-            //_context.Attach(property);
-            return View(department);
+            return View();
         }
 
-        // POST: Departments/Create
+        // POST: Projects/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Department department)
+        public async Task<IActionResult> Create([Bind("ProjectId,Name")] Project project)
         {
             if (ModelState.IsValid)
             {
-                department.OrganizationId = _context.Organizations.Find(department.OrganizationId.OrganizationId);
-                _context.Add(department);
+                _context.Add(project);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(department);
+            return View(project);
         }
 
-        // GET: Departments/Edit/5
+        // GET: Projects/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,22 +73,22 @@ namespace DbMetadata.Controllers
                 return NotFound();
             }
 
-            var department = await _context.Departments.SingleOrDefaultAsync(m => m.DepartmentId == id);
-            if (department == null)
+            var project = await _context.Projects.SingleOrDefaultAsync(m => m.ProjectId == id);
+            if (project == null)
             {
                 return NotFound();
             }
-            return View(department);
+            return View(project);
         }
 
-        // POST: Departments/Edit/5
+        // POST: Projects/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DepartmentId,Name")] Department department)
+        public async Task<IActionResult> Edit(int id, [Bind("ProjectId,Name")] Project project)
         {
-            if (id != department.DepartmentId)
+            if (id != project.ProjectId)
             {
                 return NotFound();
             }
@@ -113,12 +97,12 @@ namespace DbMetadata.Controllers
             {
                 try
                 {
-                    _context.Update(department);
+                    _context.Update(project);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DepartmentExists(department.DepartmentId))
+                    if (!ProjectExists(project.ProjectId))
                     {
                         return NotFound();
                     }
@@ -129,10 +113,10 @@ namespace DbMetadata.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(department);
+            return View(project);
         }
 
-        // GET: Departments/Delete/5
+        // GET: Projects/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,30 +124,30 @@ namespace DbMetadata.Controllers
                 return NotFound();
             }
 
-            var department = await _context.Departments
-                .SingleOrDefaultAsync(m => m.DepartmentId == id);
-            if (department == null)
+            var project = await _context.Projects
+                .SingleOrDefaultAsync(m => m.ProjectId == id);
+            if (project == null)
             {
                 return NotFound();
             }
 
-            return View(department);
+            return View(project);
         }
 
-        // POST: Departments/Delete/5
+        // POST: Projects/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var department = await _context.Departments.SingleOrDefaultAsync(m => m.DepartmentId == id);
-            _context.Departments.Remove(department);
+            var project = await _context.Projects.SingleOrDefaultAsync(m => m.ProjectId == id);
+            _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DepartmentExists(int id)
+        private bool ProjectExists(int id)
         {
-            return _context.Departments.Any(e => e.DepartmentId == id);
+            return _context.Projects.Any(e => e.ProjectId == id);
         }
     }
 }

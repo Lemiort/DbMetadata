@@ -121,7 +121,7 @@ namespace DbMetadata.Migrations
             modelBuilder.Entity("DbMetadata.Models.Metadata.Department", b =>
                 {
                     b.HasOne("DbMetadata.Models.Metadata.Organization", "OrganizationId")
-                        .WithMany()
+                        .WithMany("Departments")
                         .HasForeignKey("OrganizationId1");
                 });
 

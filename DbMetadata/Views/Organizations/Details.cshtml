@@ -25,9 +25,12 @@
     </dl>
 </div>
 <p>
+    <a asp-controller="Departments" asp-action="Create" asp-route-id="@Model.OrganizationId">Create New Department</a>
+</p>
+@{Html.RenderPartial("../Departments/Index", Model.Departments); }
+<p>
     <a asp-controller="OrganizationProperties" asp-action="Create" asp-route-id="@Model.OrganizationId">Create New Property</a>
 </p>
-@*@{Html.RenderPartial("PropertiesList", Model.Properties);}*@
 @{Html.RenderPartial("../OrganizationProperties/Index", Model.Properties); }
 <div>
     <a asp-action="Edit" asp-route-id="@Model.OrganizationId">Edit</a> |

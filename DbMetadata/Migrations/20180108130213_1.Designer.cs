@@ -11,7 +11,7 @@ using System;
 namespace DbMetadata.Migrations
 {
     [DbContext(typeof(MetadataContext))]
-    [Migration("20171225151640_1")]
+    [Migration("20180108130213_1")]
     partial class _1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -122,7 +122,7 @@ namespace DbMetadata.Migrations
             modelBuilder.Entity("DbMetadata.Models.Metadata.Department", b =>
                 {
                     b.HasOne("DbMetadata.Models.Metadata.Organization", "OrganizationId")
-                        .WithMany()
+                        .WithMany("Departments")
                         .HasForeignKey("OrganizationId1");
                 });
 
