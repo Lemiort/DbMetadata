@@ -17,10 +17,10 @@
             @Html.DisplayFor(model => model.DepartmentId)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.OrganizationId)
+            @Html.DisplayNameFor(model => model.OwnerOrganization)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.OrganizationId.OrganizationId)
+            @Html.DisplayFor(model => model.OwnerOrganization.OrganizationId)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Name)
@@ -34,6 +34,10 @@
     <a asp-controller="DepartmentProperties" asp-action="Create" asp-route-id="@Model.DepartmentId">Create New Property</a>
 </p>
 @{Html.RenderPartial("../DepartmentProperties/Index", Model.Properties); }
+<p>
+    <a asp-controller="Projects" asp-action="Create" asp-route-id="@Model.DepartmentId">Create New Project</a>
+</p>
+@{Html.RenderPartial("../Projects/Index", Model.Projects); }
 <div>
     <a asp-controller="DepartmentProperties" asp-action="Edit" asp-route-id="@Model.DepartmentId">Edit</a> |
     <a asp-controller="DepartmentProperties" asp-action="Index">Back to List</a>

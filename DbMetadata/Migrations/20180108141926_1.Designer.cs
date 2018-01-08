@@ -11,7 +11,7 @@ using System;
 namespace DbMetadata.Migrations
 {
     [DbContext(typeof(MetadataContext))]
-    [Migration("20180108130213_1")]
+    [Migration("20180108141926_1")]
     partial class _1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,11 +28,11 @@ namespace DbMetadata.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int?>("OrganizationId1");
+                    b.Property<int?>("OwnerOrganizationOrganizationId");
 
                     b.HasKey("DepartmentId");
 
-                    b.HasIndex("OrganizationId1");
+                    b.HasIndex("OwnerOrganizationOrganizationId");
 
                     b.ToTable("Departments");
                 });
@@ -90,13 +90,13 @@ namespace DbMetadata.Migrations
                     b.Property<int>("ProjectId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("DepartmentId1");
-
                     b.Property<string>("Name");
+
+                    b.Property<int?>("OwnerDepartmentDepartmentId");
 
                     b.HasKey("ProjectId");
 
-                    b.HasIndex("DepartmentId1");
+                    b.HasIndex("OwnerDepartmentDepartmentId");
 
                     b.ToTable("Projects");
                 });
@@ -121,9 +121,9 @@ namespace DbMetadata.Migrations
 
             modelBuilder.Entity("DbMetadata.Models.Metadata.Department", b =>
                 {
-                    b.HasOne("DbMetadata.Models.Metadata.Organization", "OrganizationId")
+                    b.HasOne("DbMetadata.Models.Metadata.Organization", "OwnerOrganization")
                         .WithMany("Departments")
-                        .HasForeignKey("OrganizationId1");
+                        .HasForeignKey("OwnerOrganizationOrganizationId");
                 });
 
             modelBuilder.Entity("DbMetadata.Models.Metadata.DepartmentProperty", b =>
@@ -142,9 +142,9 @@ namespace DbMetadata.Migrations
 
             modelBuilder.Entity("DbMetadata.Models.Metadata.Project", b =>
                 {
-                    b.HasOne("DbMetadata.Models.Metadata.Department", "DepartmentId")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId1");
+                    b.HasOne("DbMetadata.Models.Metadata.Department", "OwnerDepartment")
+                        .WithMany("Projects")
+                        .HasForeignKey("OwnerDepartmentDepartmentId");
                 });
 
             modelBuilder.Entity("DbMetadata.Models.Metadata.ProjectProperty", b =>

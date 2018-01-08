@@ -11,8 +11,10 @@ namespace DbMetadata.Models.Metadata
 
         public string Name { get; set; }
 
-        public Organization OrganizationId { get; set; }
+        public Organization OwnerOrganization { get; set; }
 
-        public List<DepartmentProperty> Properties { get; set; }
+        public ICollection<DepartmentProperty> Properties { get; set; }
+
+        public ICollection<Project> Projects { get; set; }
     }
 }

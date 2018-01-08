@@ -34,7 +34,8 @@ namespace DbMetadata.Controllers
 
             var department = await _context.Departments
                 .Include(d=>d.Properties)
-                .Include(d=>d.OrganizationId)
+                .Include(d=>d.OwnerOrganization)
+                .Include(d=>d.Projects)
                 .SingleOrDefaultAsync(m => m.DepartmentId == id);
             if (department == null)
             {
@@ -56,7 +57,7 @@ namespace DbMetadata.Controllers
                 .Include(o=>o.Departments)
                 .SingleOrDefaultAsync(m => m.OrganizationId == id);
 
-            var department = new Department() { OrganizationId = organization.Result };
+            var department = new Department() { OwnerOrganization = organization.Result };
             organization.Result.Departments.Add(department);
             //var property = new DepartmentProperty() { OwnerDepartment = department.Result };
             //organization.Result.Properties.Add(property);
@@ -73,7 +74,7 @@ namespace DbMetadata.Controllers
         {
             if (ModelState.IsValid)
             {
-                department.OrganizationId = _context.Organizations.Find(department.OrganizationId.OrganizationId);
+                department.OwnerOrganization = _context.Organizations.Find(department.OwnerOrganization.OrganizationId);
                 _context.Add(department);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

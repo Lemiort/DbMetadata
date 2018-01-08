@@ -33,6 +33,7 @@ namespace DbMetadata.Controllers
             }
 
             var project = await _context.Projects
+                .Include(p=>p.OwnerDepartment)
                 .Include(p=>p.Properties)
                 .SingleOrDefaultAsync(m => m.ProjectId == id);
             if (project == null)
@@ -44,9 +45,23 @@ namespace DbMetadata.Controllers
         }
 
         // GET: Projects/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var department = _context.Departments
+                .Include(d =>d.Projects)
+                .SingleOrDefaultAsync(m => m.DepartmentId == id);
+
+            var project = new Project() { OwnerDepartment = department.Result };
+            department.Result.Projects.Add(project);
+            //var property = new DepartmentProperty() { OwnerDepartment = department.Result };
+            //organization.Result.Properties.Add(property);
+            //_context.Attach(property);
+            return View(project);
         }
 
         // POST: Projects/Create
@@ -54,10 +69,11 @@ namespace DbMetadata.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProjectId,Name")] Project project)
+        public async Task<IActionResult> Create(Project project)
         {
             if (ModelState.IsValid)
             {
+                project.OwnerDepartment = _context.Departments.Find(project.OwnerDepartment.DepartmentId);
                 _context.Add(project);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

@@ -9,7 +9,7 @@ namespace DbMetadata.Models.Metadata
     {
         public int ProjectId { get; set; }
 
-        public Department DepartmentId { get; set; }
+        public Department OwnerDepartment { get; set; }
 
         public string Name { get; set; }
 

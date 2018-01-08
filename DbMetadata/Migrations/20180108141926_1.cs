@@ -29,14 +29,14 @@ namespace DbMetadata.Migrations
                     DepartmentId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
-                    OrganizationId1 = table.Column<int>(nullable: true)
+                    OwnerOrganizationOrganizationId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Departments", x => x.DepartmentId);
                     table.ForeignKey(
-                        name: "FK_Departments_Organizations_OrganizationId1",
-                        column: x => x.OrganizationId1,
+                        name: "FK_Departments_Organizations_OwnerOrganizationOrganizationId",
+                        column: x => x.OwnerOrganizationOrganizationId,
                         principalTable: "Organizations",
                         principalColumn: "OrganizationId",
                         onDelete: ReferentialAction.Restrict);
@@ -90,15 +90,15 @@ namespace DbMetadata.Migrations
                 {
                     ProjectId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    DepartmentId1 = table.Column<int>(nullable: true),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    OwnerDepartmentDepartmentId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Projects", x => x.ProjectId);
                     table.ForeignKey(
-                        name: "FK_Projects_Departments_DepartmentId1",
-                        column: x => x.DepartmentId1,
+                        name: "FK_Projects_Departments_OwnerDepartmentDepartmentId",
+                        column: x => x.OwnerDepartmentDepartmentId,
                         principalTable: "Departments",
                         principalColumn: "DepartmentId",
                         onDelete: ReferentialAction.Restrict);
@@ -131,9 +131,9 @@ namespace DbMetadata.Migrations
                 column: "OwnerDepartmentDepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Departments_OrganizationId1",
+                name: "IX_Departments_OwnerOrganizationOrganizationId",
                 table: "Departments",
-                column: "OrganizationId1");
+                column: "OwnerOrganizationOrganizationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrganizationProperties_OwnerOrganizationOrganizationId",
@@ -146,9 +146,9 @@ namespace DbMetadata.Migrations
                 column: "OwnerProjectProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Projects_DepartmentId1",
+                name: "IX_Projects_OwnerDepartmentDepartmentId",
                 table: "Projects",
-                column: "DepartmentId1");
+                column: "OwnerDepartmentDepartmentId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
