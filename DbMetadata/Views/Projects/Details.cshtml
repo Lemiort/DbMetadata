@@ -38,6 +38,11 @@
 @{Html.RenderPartial("../ProjectProperties/Index", Model.Properties); }
 
 <p>
+    <a asp-controller="Tasks" asp-action="Create" asp-route-id="@Model.ProjectId">Create New Task</a>
+</p>
+@{Html.RenderPartial("../Tasks/Index", Model.Tasks); }
+
+<p>
     <a asp-controller="Documents" asp-action="Create" asp-route-id="@Model.ProjectId">Create New Document</a>
 </p>
 @{Html.RenderPartial("../Documents/Index", Model.Documents); }

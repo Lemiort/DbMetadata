@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using DbMetadata.Models;
 
 namespace DbMetadata.Models
 {
@@ -27,5 +28,7 @@ namespace DbMetadata.Models
         {
                
         }
+
+        public DbSet<DbMetadata.Models.Task> Task { get; set; }
     }
 }

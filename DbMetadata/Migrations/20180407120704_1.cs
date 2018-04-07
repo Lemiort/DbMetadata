@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DbMetadata.Migrations
 {
@@ -15,9 +15,9 @@ namespace DbMetadata.Migrations
                 {
                     DocumentFileId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
                     Data = table.Column<byte[]>(nullable: true),
                     ModifiedTime = table.Column<DateTime>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
                     PrevVersionDocumentFileId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -68,11 +68,11 @@ namespace DbMetadata.Migrations
                 name: "OrganizationProperties",
                 columns: table => new
                 {
+                    Title = table.Column<string>(nullable: true),
+                    Value = table.Column<string>(nullable: true),
                     OrganizationPropertyId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    OwnerOrganizationOrganizationId = table.Column<int>(nullable: true),
-                    Title = table.Column<string>(nullable: true),
-                    Value = table.Column<string>(nullable: true)
+                    OwnerOrganizationOrganizationId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -89,11 +89,11 @@ namespace DbMetadata.Migrations
                 name: "DepartmentProperties",
                 columns: table => new
                 {
+                    Title = table.Column<string>(nullable: true),
+                    Value = table.Column<string>(nullable: true),
                     DepartmentPropertyId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    OwnerDepartmentDepartmentId = table.Column<int>(nullable: true),
-                    Title = table.Column<string>(nullable: true),
-                    Value = table.Column<string>(nullable: true)
+                    OwnerDepartmentDepartmentId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -112,8 +112,8 @@ namespace DbMetadata.Migrations
                 {
                     ProjectId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    OwnerDepartmentDepartmentId = table.Column<int>(nullable: true)
+                    OwnerDepartmentDepartmentId = table.Column<int>(nullable: true),
+                    Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -156,17 +156,40 @@ namespace DbMetadata.Migrations
                 name: "ProjectProperties",
                 columns: table => new
                 {
+                    Title = table.Column<string>(nullable: true),
+                    Value = table.Column<string>(nullable: true),
                     ProjectPropertyId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    OwnerProjectProjectId = table.Column<int>(nullable: true),
-                    Title = table.Column<string>(nullable: true),
-                    Value = table.Column<string>(nullable: true)
+                    OwnerProjectProjectId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProjectProperties", x => x.ProjectPropertyId);
                     table.ForeignKey(
                         name: "FK_ProjectProperties_Projects_OwnerProjectProjectId",
+                        column: x => x.OwnerProjectProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "ProjectId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Task",
+                columns: table => new
+                {
+                    TaskId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Description = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    StartTime = table.Column<DateTime>(nullable: false),
+                    EndTime = table.Column<DateTime>(nullable: false),
+                    OwnerProjectProjectId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Task", x => x.TaskId);
+                    table.ForeignKey(
+                        name: "FK_Task_Projects_OwnerProjectProjectId",
                         column: x => x.OwnerProjectProjectId,
                         principalTable: "Projects",
                         principalColumn: "ProjectId",
@@ -212,6 +235,11 @@ namespace DbMetadata.Migrations
                 name: "IX_Projects_OwnerDepartmentDepartmentId",
                 table: "Projects",
                 column: "OwnerDepartmentDepartmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Task_OwnerProjectProjectId",
+                table: "Task",
+                column: "OwnerProjectProjectId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -227,6 +255,9 @@ namespace DbMetadata.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProjectProperties");
+
+            migrationBuilder.DropTable(
+                name: "Task");
 
             migrationBuilder.DropTable(
                 name: "DocumentFiles");

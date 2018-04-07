@@ -39,6 +39,7 @@ namespace DbMetadata.Controllers
                 .Include(p=>p.OwnerDepartment)
                 .Include(p=>p.Properties)
                 .Include(p=>p.Documents)
+                .Include(p=>p.Tasks)
                 .SingleOrDefaultAsync(m => m.ProjectId == id);
             foreach(var doc in project.Documents)
             {
@@ -183,7 +184,7 @@ namespace DbMetadata.Controllers
             }
 
             var project = await _context.Projects
-                .Include(m=>m.Properties)
+                .Include(m => m.Properties)
                 .Include(m => m.OwnerDepartment.Properties)
                 .Include(m => m.OwnerDepartment.OwnerOrganization.Properties)
                 .SingleOrDefaultAsync(m => m.ProjectId == id);
@@ -204,7 +205,12 @@ namespace DbMetadata.Controllers
             document.SaveAs(stream);
             stream.Position = 0;
 
-            return File(stream, "application/x-msdownload", project.Name+"_project_card.xlsx");
+            return File(stream, "application/x-msdownload", project.Name + "_project_card.xlsx");
+            //FileStream fileStream = new FileStream(Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationBasePath +
+            //    "..\\..\\..\\sample.xlsx", FileMode.Open, FileAccess.Read);
+            //byte[] file = new byte[fileStream.Length];
+            //fileStream.Read(file, 0, file.Length);
+            //return File( file, "application/x-msdownload", project.Name + "_project_card.xlsx");
         }
         //    return File(documentFile.Data, "application/x-msdownload", documentFile.Name);
         //}

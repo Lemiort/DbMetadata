@@ -17,6 +17,8 @@ namespace DbMetadata.Models
 
         public ICollection<Document> Documents { get; set; }
 
+        public ICollection<Task> Tasks { get; set; }
+
         public Project()
         {
 
