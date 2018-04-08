@@ -29,6 +29,7 @@ namespace DbMetadata.Models
                
         }
 
-        public DbSet<DbMetadata.Models.Task> Task { get; set; }
+        public DbSet<DbMetadata.Models.Task> Tasks { get; set; }
+        public DbSet<Link> Links { get; set; }
     }
 }

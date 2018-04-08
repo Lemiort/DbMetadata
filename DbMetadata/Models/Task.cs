@@ -7,13 +7,16 @@ namespace DbMetadata.Models
 {
     public class Task
     {
-
         public int TaskId { get; set; }
-        public string Description { get; set; }
-        public string Name { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-
-        public Project OwnerProject { get; set; }
+        public string Text { get; set; }
+        public DateTime StartDate { get; set; }
+        public int Duration { get; set; }
+        public decimal Progress { get; set; }
+        public int? ParentId { get; set; }
+        public string Type { get; set; }
+        public bool Open { get; set; }
+        public DateTime EndDate{ get; set; }
+        public bool Readonly { get; set; }
+        public bool Editable { get; set; }
     }
 }

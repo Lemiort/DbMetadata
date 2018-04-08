@@ -2,164 +2,96 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using DbMetadata.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DbMetadata.Controllers
 {
-    public class TasksController : Controller
+    [Produces("application/json")]
+    [Route("api/[controller]")]
+    public class TaskController : Controller
     {
         private readonly MetadataContext _context;
 
-        public TasksController(MetadataContext context)
+        public TaskController(MetadataContext context)
         {
             _context = context;
         }
 
-        // GET: Tasks
-        public async Task<IActionResult> Index()
+        // GET api/Task
+        public IEnumerable<TaskDto> Get()
         {
-            return View(await _context.Task.Include(p => p.OwnerProject).ToListAsync());
+            return _context.Tasks
+                .ToList()
+                .Select(t => (TaskDto)t);
         }
 
-        // GET: Tasks/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET api/Task/5
+        [HttpGet]
+        public TaskDto Get(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var task = await _context.Task
-                .FirstOrDefaultAsync(m => m.TaskId == id);
-            if (task == null)
-            {
-                return NotFound();
-            }
-
-            return View(task);
+            return (TaskDto)_context
+                .Tasks
+                .Find(id);
         }
 
-        // GET: Tasks/Create
-        public IActionResult Create(int? id)
+        // PUT api/Task/5
+        [HttpPut("{id}")]
+        public IActionResult EditTask(int id, TaskDto taskDto)
         {
-            if (id == null)
+            var updatedTask = (DbMetadata.Models.Task)taskDto;
+            updatedTask.TaskId = id;
+            _context.Entry(updatedTask).State = EntityState.Modified;
+            _context.SaveChanges();
+
+            return Ok(new
             {
-                return NotFound();
-            }
-
-            var project = _context.Projects
-                .Include(p => p.Tasks)
-                .SingleOrDefaultAsync(m => m.ProjectId == id);
-
-            var task = new DbMetadata.Models.Task() { OwnerProject = project.Result };
-            project.Result.Tasks.Add(task);
-            _context.Attach(task);
-            return View(task);
+                action = "updated"
+            });
         }
 
-        // POST: Tasks/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST api/Task
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( DbMetadata.Models.Task task)
+        public IActionResult CreateTask(TaskDto taskDto)
         {
-            if (ModelState.IsValid)
+            var newTask = (DbMetadata.Models.Task)taskDto;
+
+            _context.Tasks.Add(newTask);
+            _context.SaveChanges();
+
+            return Ok(new
             {
-                task.OwnerProject = _context.Projects.Find(task.OwnerProject.ProjectId);
-                _context.Add(task);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(task);
+                tid = newTask.TaskId,
+                action = "inserted"
+            });
         }
 
-        // GET: Tasks/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // DELETE api/Task/5
+        [HttpDelete("{id}")]
+        public IActionResult DeleteTask(int id)
         {
-            if (id == null)
+            var task = _context.Tasks.Find(id);
+            if (task != null)
             {
-                return NotFound();
+                _context.Tasks.Remove(task);
+                _context.SaveChanges();
             }
 
-            var task = await _context.Task.FindAsync(id);
-            if (task == null)
+            return Ok(new
             {
-                return NotFound();
-            }
-            return View(task);
+                action = "deleted"
+            });
         }
 
-        // POST: Tasks/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TaskId,Description,Name,StartTime,EndTime")] DbMetadata.Models.Task task)
+        protected override void Dispose(bool disposing)
         {
-            if (id != task.TaskId)
+            if (disposing)
             {
-                return NotFound();
+                _context.Dispose();
             }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(task);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TaskExists(task.TaskId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(task);
-        }
-
-        // GET: Tasks/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var task = await _context.Task
-                .FirstOrDefaultAsync(m => m.TaskId == id);
-            if (task == null)
-            {
-                return NotFound();
-            }
-
-            return View(task);
-        }
-
-        // POST: Tasks/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var task = await _context.Task.FindAsync(id);
-            _context.Task.Remove(task);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool TaskExists(int id)
-        {
-            return _context.Task.Any(e => e.TaskId == id);
+            base.Dispose(disposing);
         }
     }
 }
