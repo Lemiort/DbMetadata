@@ -19,9 +19,9 @@
             gantt.init("gantt_here");
 
             // initiating data loading
-            gantt.load("/api/data");
+            gantt.load("/api/Projects/@Model.ProjectId/GanttData");
             // initializing dataProcessor
-            var dp = new gantt.dataProcessor("/api/");
+            var dp = new gantt.dataProcessor("/api/Projects/@Model.ProjectId/");/*как-то так роутинг сделать*/
             // and attaching it to gantt
             dp.init(gantt);
             // setting the REST mode for dataProcessor

@@ -214,5 +214,159 @@ namespace DbMetadata.Controllers
         }
         //    return File(documentFile.Data, "application/x-msdownload", documentFile.Name);
         //}
+
+
+        // GET api/Projects/5/GanttData
+        [HttpGet]
+        [Route("api/Projects/{projectId}/GanttData")]
+        public GanttDto GanttData(int projectId)
+        {
+            return new GanttDto
+            {
+                data = GetTask(),
+                links = GetLink()
+            };
+        }
+
+        // GET api/Task
+        public IEnumerable<TaskDto> GetTask()
+        {
+            return _context.Tasks
+                .ToList()
+                .Select(t => (TaskDto)t);
+        }
+
+
+        // GET api/Task/5
+        [HttpGet]
+        [Route("api/Projects/{projectId}/Task/{id}")]
+        public TaskDto GetTask(int projectId,int id)
+        {
+            return (TaskDto)_context
+                .Tasks
+                .Find(id);
+        }
+
+        // POST api/Task
+        [HttpPost]
+        [Route("api/Projects/{projectId}/Task")]
+        public IActionResult CreateTask(int projectId,TaskDto taskDto)
+        {
+            var newTask = (DbMetadata.Models.Task)taskDto;
+
+            _context.Tasks.Add(newTask);
+            _context.SaveChanges();
+
+            return Ok(new
+            {
+                tid = newTask.TaskId,
+                action = "inserted"
+            });
+        }
+
+        // DELETE api/Task/5
+        [HttpDelete]
+        [Route("api/Projects/{projectId}/Task/{id}")]
+        public IActionResult DeleteTask(int projectId,int id)
+        {
+            var task = _context.Tasks.Find(id);
+            if (task != null)
+            {
+                _context.Tasks.Remove(task);
+                _context.SaveChanges();
+            }
+
+            return Ok(new
+            {
+                action = "deleted"
+            });
+        }
+
+        // PUT api/Task/5
+        [HttpPut]
+        [Route("api/Projects/{projectId}/Task/{id}")]
+        public IActionResult EditTask(int projectId, int id, TaskDto taskDto)
+        {
+            var updatedTask = (DbMetadata.Models.Task)taskDto;
+            updatedTask.TaskId = id;
+            _context.Entry(updatedTask).State = EntityState.Modified;
+            _context.SaveChanges();
+
+            return Ok(new
+            {
+                action = "updated"
+            });
+        }
+
+
+        // GET api/Link
+        [HttpGet]
+        public IEnumerable<LinkDto> GetLink()
+        {
+            return _context
+                .Links
+                .ToList()
+                .Select(l => (LinkDto)l);
+        }
+
+        // GET api/Link/5
+        [HttpGet]
+        [Route("api/Projects/{projectId}/Link/{id}")]
+        public LinkDto GetLink(int projectId, int id)
+        {
+            return (LinkDto)_context
+                .Links
+                .Find(id);
+        }
+
+        // POST api/Link
+        [HttpPost]
+        [Route("api/Projects/{projectId}/Link/")]
+        public ActionResult CreateLink(int projectId, LinkDto linkDto)
+        {
+            var newLink = (Link)linkDto;
+            _context.Links.Add(newLink);
+            _context.SaveChanges();
+
+            return Ok(new
+            {
+                tid = newLink.LinkId,
+                action = "inserted"
+            });
+        }
+
+        // PUT api/Link/5
+        [HttpPut]
+        [Route("api/Projects/{projectId}/Link/{id}")]
+        public ActionResult EditLink(int projectId, int id, LinkDto linkDto)
+        {
+            var clientLink = (Link)linkDto;
+            clientLink.LinkId = id;
+
+            _context.Entry(clientLink).State = EntityState.Modified;
+            _context.SaveChanges();
+
+            return Ok(new
+            {
+                action = "updated"
+            });
+        }
+
+        // DELETE api/Link/5
+        [HttpDelete("{id}")]
+        [Route("api/Projects/{projectId}/Link/{id}")]
+        public ActionResult DeleteLink(int projectId, int id)
+        {
+            var link = _context.Links.Find(id);
+            if (link != null)
+            {
+                _context.Links.Remove(link);
+                _context.SaveChanges();
+            }
+            return Ok(new
+            {
+                action = "deleted"
+            });
+        }
     }
 }
