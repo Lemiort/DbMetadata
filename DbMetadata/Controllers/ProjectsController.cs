@@ -40,6 +40,7 @@ namespace DbMetadata.Controllers
                 .Include(p=>p.Properties)
                 .Include(p=>p.Documents)
                 .Include(p=>p.Tasks)
+                .Include(p=>p.Links)
                 .SingleOrDefaultAsync(m => m.ProjectId == id);
             foreach(var doc in project.Documents)
             {
@@ -223,15 +224,16 @@ namespace DbMetadata.Controllers
         {
             return new GanttDto
             {
-                data = GetTask(),
-                links = GetLink()
+                data = GetTask(projectId),
+                links = GetLink(projectId)
             };
         }
 
         // GET api/Task
-        public IEnumerable<TaskDto> GetTask()
+        public IEnumerable<TaskDto> GetTask(int projectId)
         {
             return _context.Tasks
+                .Where(t=>t.ProjectId == projectId)
                 .ToList()
                 .Select(t => (TaskDto)t);
         }
@@ -254,7 +256,17 @@ namespace DbMetadata.Controllers
         {
             var newTask = (DbMetadata.Models.Task)taskDto;
 
+            //save id
+            newTask.ProjectId = projectId;
+
+            //save to project
+            var project = _context.Projects
+                .Include(p => p.Tasks)
+                .SingleOrDefaultAsync(m => m.ProjectId == projectId);
+            project.Result.Tasks.Add(newTask);
+
             _context.Tasks.Add(newTask);
+
             _context.SaveChanges();
 
             return Ok(new
@@ -288,6 +300,7 @@ namespace DbMetadata.Controllers
         public IActionResult EditTask(int projectId, int id, TaskDto taskDto)
         {
             var updatedTask = (DbMetadata.Models.Task)taskDto;
+            updatedTask.ProjectId = projectId;
             updatedTask.TaskId = id;
             _context.Entry(updatedTask).State = EntityState.Modified;
             _context.SaveChanges();
@@ -301,10 +314,11 @@ namespace DbMetadata.Controllers
 
         // GET api/Link
         [HttpGet]
-        public IEnumerable<LinkDto> GetLink()
+        public IEnumerable<LinkDto> GetLink(int projectId)
         {
             return _context
                 .Links
+                .Where(l=>l.ProjectId == projectId)
                 .ToList()
                 .Select(l => (LinkDto)l);
         }
@@ -325,8 +339,18 @@ namespace DbMetadata.Controllers
         public ActionResult CreateLink(int projectId, LinkDto linkDto)
         {
             var newLink = (Link)linkDto;
+
+            //newLink id
+            newLink.ProjectId = projectId;
+
+            //save to project
+            var project = _context.Projects
+                .Include(p => p.Links)
+                .SingleOrDefaultAsync(m => m.ProjectId == projectId);
+            project.Result.Links.Add(newLink);
+
             _context.Links.Add(newLink);
-            _context.SaveChanges();
+
 
             return Ok(new
             {
@@ -342,6 +366,7 @@ namespace DbMetadata.Controllers
         {
             var clientLink = (Link)linkDto;
             clientLink.LinkId = id;
+            clientLink.ProjectId = projectId;
 
             _context.Entry(clientLink).State = EntityState.Modified;
             _context.SaveChanges();

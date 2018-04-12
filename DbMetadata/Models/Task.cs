@@ -18,5 +18,6 @@ namespace DbMetadata.Models
         public DateTime EndDate{ get; set; }
         public bool Readonly { get; set; }
         public bool Editable { get; set; }
+        public int ProjectId { get; set; }
     }
 }
