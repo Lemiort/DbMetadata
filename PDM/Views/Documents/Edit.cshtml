@@ -1,0 +1,44 @@
+﻿@model PDM.Models.Document
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>Document</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="DocumentId" />
+            <div class="form-group">
+                <label asp-for="File.Name" class="control-label"></label>
+                <input asp-for="File.Name" class="form-control" />
+                <span asp-validation-for="File.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="File.Data" class="control-label"></label>
+                <input asp-for="File.Data" class="form-control" />
+                <span asp-validation-for="File.Data" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="File.ModifiedTime" class="control-label"></label>
+                <input asp-for="File.ModifiedTime" class="form-control" />
+                <span asp-validation-for="File.ModifiedTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

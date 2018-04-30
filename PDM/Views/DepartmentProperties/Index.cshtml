@@ -1,0 +1,42 @@
+﻿@model IEnumerable<PDM.Models.DepartmentProperty>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OwnerDepartment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Value)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.OwnerDepartment.DepartmentId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Value)
+            </td>
+            <td>
+                <a asp-controller="DepartmentProperties" asp-action="Edit" asp-route-id="@item.DepartmentPropertyId">Edit</a> |
+                <a asp-controller="DepartmentProperties" asp-action="Details" asp-route-id="@item.DepartmentPropertyId">Details</a> |
+                <a asp-controller="DepartmentProperties" asp-action="Delete" asp-route-id="@item.DepartmentPropertyId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

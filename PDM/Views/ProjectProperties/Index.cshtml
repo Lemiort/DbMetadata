@@ -1,0 +1,47 @@
+﻿@model IEnumerable<PDM.Models.ProjectProperty>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h4>Properties</h4>
+
+@*<p>
+    <a asp-action="Create">Create New</a>
+</p>*@
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OwnerProject)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Value)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.OwnerProject.ProjectId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Value)
+            </td>
+            <td>
+                <a asp-controller="ProjectProperties" asp-action="Edit" asp-route-id="@item.ProjectPropertyId">Edit</a> |
+                <a asp-controller="ProjectProperties" asp-action="Details" asp-route-id="@item.ProjectPropertyId">Details</a> |
+                <a asp-controller="ProjectProperties" asp-action="Delete" asp-route-id="@item.ProjectPropertyId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
