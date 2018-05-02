@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using PDM.Models;
 using ClosedXML.Excel;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PDM.Controllers
 {
+    [Authorize]
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
