@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace PDM.Controllers
 {
@@ -14,9 +16,11 @@ namespace PDM.Controllers
     public class DepartmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public DepartmentsController(ApplicationDbContext context)
+        public DepartmentsController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
+            _userManager = userManager;
             _context = context;
         }
 
@@ -79,6 +83,12 @@ namespace PDM.Controllers
                 department.OwnerOrganization = _context.Organizations.Find(department.OwnerOrganization.OrganizationId);
                 _context.Add(department);
                 await _context.SaveChangesAsync();
+
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                var claimType = department.DepartmentId.ToString();
+                var claim = new Claim("Department" + claimType, "Creator");
+                await _userManager.AddClaimAsync(user, claim);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(department);
@@ -161,6 +171,13 @@ namespace PDM.Controllers
             var department = await _context.Departments.SingleOrDefaultAsync(m => m.DepartmentId == id);
             _context.Departments.Remove(department);
             await _context.SaveChangesAsync();
+
+
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var claimType = department.DepartmentId.ToString();
+            var claim = new Claim("Department" + claimType, "Creator");
+            await _userManager.RemoveClaimAsync(user, claim);
+
             return RedirectToAction(nameof(Index));
         }
 

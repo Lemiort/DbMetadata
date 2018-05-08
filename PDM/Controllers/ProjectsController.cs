@@ -9,6 +9,8 @@ using PDM.Models;
 using ClosedXML.Excel;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace PDM.Controllers
 {
@@ -16,9 +18,11 @@ namespace PDM.Controllers
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ProjectsController(ApplicationDbContext context)
+        public ProjectsController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
+            _userManager = userManager;
             _context = context;
         }
 
@@ -89,6 +93,12 @@ namespace PDM.Controllers
                 project.OwnerDepartment = _context.Departments.Find(project.OwnerDepartment.DepartmentId);
                 _context.Add(project);
                 await _context.SaveChangesAsync();
+
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                var claimType = project.ProjectId.ToString();
+                var claim = new Claim("Project" + claimType, "Creator");
+                await _userManager.AddClaimAsync(user, claim);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(project);
@@ -171,6 +181,12 @@ namespace PDM.Controllers
             var project = await _context.Projects.SingleOrDefaultAsync(m => m.ProjectId == id);
             _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
+
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var claimType = project.ProjectId.ToString();
+            var claim = new Claim("Project" + claimType, "Creator");
+            await _userManager.RemoveClaimAsync(user, claim);
+
             return RedirectToAction(nameof(Index));
         }
 

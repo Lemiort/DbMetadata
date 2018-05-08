@@ -24,10 +24,22 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-            <td>
+            @*<td>
                 <a asp-controller="Departments" asp-action="Edit" asp-route-id="@item.DepartmentId">Edit</a> |
                 <a asp-controller="Departments" asp-action="Details" asp-route-id="@item.DepartmentId">Details</a> |
                 <a asp-controller="Departments" asp-action="Delete" asp-route-id="@item.DepartmentId">Delete</a>
+            </td>*@
+            <td>
+                @if (User.HasClaim(c => c.Type == "Department" + item.DepartmentId && c.Value == "Creator"))
+                {
+                    <a asp-action="Edit" asp-route-id="@item.DepartmentId"> Edit </a> @:|
+                }
+                <a asp-action="Details" asp-route-id="@item.DepartmentId">Details</a>
+                @if (User.HasClaim(c => c.Type == "Department" + item.DepartmentId && c.Value == "Creator"))
+                {
+                    @:|
+                    <a asp-action="Delete" asp-route-id="@item.DepartmentId">Delete</a>
+                }
             </td>
         </tr>
 }

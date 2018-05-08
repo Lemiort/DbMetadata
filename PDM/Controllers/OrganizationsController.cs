@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +15,12 @@ namespace PDM.Controllers
     public class OrganizationsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public OrganizationsController(ApplicationDbContext context)
+        public OrganizationsController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Organizations
@@ -95,16 +99,28 @@ namespace PDM.Controllers
         {
             if (ModelState.IsValid)
             {
+                
+
                 _context.Add(organization);
                 await _context.SaveChangesAsync();
+
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                var claimType = organization.OrganizationId.ToString();
+                var claim = new Claim("Organization" + claimType, "Creator");
+                await _userManager.AddClaimAsync(user, claim);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(organization);
         }
 
         // GET: Organizations/Edit/5
+
+        //[ClaimsAuthorize(Age=18)]
         public async Task<IActionResult> Edit(int? id)
         {
+            var identity = (ClaimsIdentity)User.Identity;
+            IEnumerable<Claim> claims = identity.Claims;
             if (id == null)
             {
                 return NotFound();
@@ -115,7 +131,19 @@ namespace PDM.Controllers
             {
                 return NotFound();
             }
-            return View(organization);
+
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var claimType = organization.OrganizationId.ToString();
+            var claim = new Claim("Organization" + claimType, "Creator");
+
+
+            if (User.HasClaim(c => c.Type == claim.Type && c.Value == claim.Value))
+            {
+
+                return View(organization);
+            }
+            else
+                return RedirectToAction("AccessDenied", "Account");
         }
 
         // POST: Organizations/Edit/5
@@ -176,10 +204,24 @@ namespace PDM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+
             var organization = await _context.Organizations.SingleOrDefaultAsync(m => m.OrganizationId == id);
-            _context.Organizations.Remove(organization);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var claimType = organization.OrganizationId.ToString();
+            var claim = new Claim("Organization" + claimType, "Creator");
+
+
+            if (User.HasClaim(c => c.Type == claim.Type && c.Value == claim.Value))
+            {
+                _context.Organizations.Remove(organization);
+                await _context.SaveChangesAsync();
+                await _userManager.RemoveClaimAsync(user, claim);
+
+                return RedirectToAction(nameof(Index));
+            }
+            else
+                return RedirectToAction("AccessDenied", "Account");
         }
 
         private bool OrganizationExists(int id)
