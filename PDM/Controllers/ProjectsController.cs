@@ -117,7 +117,19 @@ namespace PDM.Controllers
             {
                 return NotFound();
             }
-            return View(project);
+
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var claimType = project.ProjectId.ToString();
+            var claim = new Claim("Project" + claimType, "Creator");
+
+
+            if (User.HasClaim(c => c.Type == claim.Type && c.Value == claim.Value))
+            {
+
+                return View(project);
+            }
+            else
+                return RedirectToAction("AccessDenied", "Account");
         }
 
         // POST: Projects/Edit/5
@@ -179,15 +191,22 @@ namespace PDM.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var project = await _context.Projects.SingleOrDefaultAsync(m => m.ProjectId == id);
-            _context.Projects.Remove(project);
-            await _context.SaveChangesAsync();
 
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var claimType = project.ProjectId.ToString();
             var claim = new Claim("Project" + claimType, "Creator");
-            await _userManager.RemoveClaimAsync(user, claim);
 
-            return RedirectToAction(nameof(Index));
+
+            if (User.HasClaim(c => c.Type == claim.Type && c.Value == claim.Value))
+            {
+                _context.Projects.Remove(project);
+                await _context.SaveChangesAsync();
+                await _userManager.RemoveClaimAsync(user, claim);
+
+                return RedirectToAction(nameof(Index));
+            }
+            else
+                return RedirectToAction("AccessDenied", "Account");
         }
 
         private bool ProjectExists(int id)

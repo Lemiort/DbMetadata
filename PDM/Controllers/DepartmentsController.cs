@@ -107,7 +107,18 @@ namespace PDM.Controllers
             {
                 return NotFound();
             }
-            return View(department);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var claimType = department.DepartmentId.ToString();
+            var claim = new Claim("Department" + claimType, "Creator");
+
+
+            if (User.HasClaim(c => c.Type == claim.Type && c.Value == claim.Value))
+            {
+
+                return View(department);
+            }
+            else
+                return RedirectToAction("AccessDenied", "Account");
         }
 
         // POST: Departments/Edit/5
@@ -169,16 +180,22 @@ namespace PDM.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var department = await _context.Departments.SingleOrDefaultAsync(m => m.DepartmentId == id);
-            _context.Departments.Remove(department);
-            await _context.SaveChangesAsync();
-
 
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var claimType = department.DepartmentId.ToString();
             var claim = new Claim("Department" + claimType, "Creator");
-            await _userManager.RemoveClaimAsync(user, claim);
 
-            return RedirectToAction(nameof(Index));
+
+            if (User.HasClaim(c => c.Type == claim.Type && c.Value == claim.Value))
+            {
+                _context.Departments.Remove(department);
+                await _context.SaveChangesAsync();
+                await _userManager.RemoveClaimAsync(user, claim);
+
+                return RedirectToAction(nameof(Index));
+            }
+            else
+                return RedirectToAction("AccessDenied", "Account");
         }
 
         private bool DepartmentExists(int id)
