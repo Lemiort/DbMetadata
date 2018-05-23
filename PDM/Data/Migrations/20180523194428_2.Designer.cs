@@ -11,9 +11,10 @@ using System;
 namespace PDM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180523194428_2")]
+    partial class _2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,7 +225,9 @@ namespace PDM.Data.Migrations
 
                     b.HasKey("DocumentId");
 
-                    b.HasIndex("FileDocumentFileId");
+                    b.HasIndex("FileDocumentFileId")
+                        .IsUnique()
+                        .HasFilter("[FileDocumentFileId] IS NOT NULL");
 
                     b.HasIndex("ProjectId");
 
@@ -241,8 +244,6 @@ namespace PDM.Data.Migrations
                     b.Property<DateTime>("ModifiedTime");
 
                     b.Property<string>("Name");
-
-                    b.Property<int>("OwnerDocumentId");
 
                     b.HasKey("DocumentFileId");
 
@@ -429,8 +430,8 @@ namespace PDM.Data.Migrations
             modelBuilder.Entity("PDM.Models.Document", b =>
                 {
                     b.HasOne("PDM.Models.DocumentFile", "File")
-                        .WithMany()
-                        .HasForeignKey("FileDocumentFileId");
+                        .WithOne("OwnerDocument")
+                        .HasForeignKey("PDM.Models.Document", "FileDocumentFileId");
 
                     b.HasOne("PDM.Models.Project")
                         .WithMany("Documents")

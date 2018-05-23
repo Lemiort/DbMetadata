@@ -30,12 +30,13 @@
             @Html.DisplayFor(model => model.File.ModifiedTime)
         </dd>
     </dl>
+    <a asp-controller="Documents" asp-action="VersionsList" asp-route-id="@Model.DocumentId">All versions</a>
     @*@if (Model.File.PrevVersion != null)
-    {
-        <a asp-action="Details" asp-route-id="@Model.File.PrevVersion.">Previous version</a>
-    }*@
+        {
+            <a asp-action="Details" asp-route-id="@Model.File.PrevVersion.">Previous version</a>
+        }*@
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.DocumentId">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model.File.OwnerDocumentId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

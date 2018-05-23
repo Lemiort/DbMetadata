@@ -28,6 +28,18 @@ namespace PDM.Controllers
             return View(await _context.Documents.Include(m=>m.File).ToListAsync());
         }
 
+        public async Task<IActionResult> VersionsList(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            IEnumerable<DocumentFile> files = _context.DocumentFiles
+                .Where(f => f.OwnerDocumentId == id);
+            return View(files);
+        }
+
         // GET: Documents/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -38,7 +50,6 @@ namespace PDM.Controllers
 
             var document = await _context.Documents
                 .Include(m=>m.File)
-                .Include(m=>m.File.PrevVersion)
                 .SingleOrDefaultAsync(m => m.DocumentId == id);
             if (document == null)
             {
@@ -75,10 +86,12 @@ namespace PDM.Controllers
             if (ModelState.IsValid)
             {
                 var document = new Document();
-                var project = _context.Projects.Include(p => p.Documents).FirstOrDefault(p=>p.ProjectId == documentViewModel.ProjectId);
+                var project = _context.Projects.Include(p => p.Documents)
+                    .FirstOrDefault(p=>p.ProjectId == documentViewModel.ProjectId);
                 var file = new DocumentFile();
                 file.Name = documentViewModel.Name;
                 file.ModifiedTime = DateTime.Now;
+                file.OwnerDocumentId = document.DocumentId;
                 using (var memoryStream = new MemoryStream())
                 {
                     await documentViewModel.Data.CopyToAsync(memoryStream);
@@ -89,6 +102,10 @@ namespace PDM.Controllers
                 document.File = file;
                 project.Documents.Add(document);
                 _context.Add(document);
+                await _context.SaveChangesAsync();
+
+                file.OwnerDocumentId = document.DocumentId;
+                _context.Update(file);
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -104,12 +121,15 @@ namespace PDM.Controllers
                 return NotFound();
             }
 
-            var document = await _context.Documents.SingleOrDefaultAsync(m => m.DocumentId == id);
+            var document = await _context.Documents
+                .Include(d=>d.File)
+                .SingleOrDefaultAsync(m => m.DocumentId == id);
             if (document == null)
             {
                 return NotFound();
             }
-            return View(document);
+            //return View(document);
+            return View(new DocumentEditViewModel() {DocumentId = document.DocumentId, Name = document.File.Name });
         }
 
         // POST: Documents/Edit/5
@@ -117,15 +137,36 @@ namespace PDM.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DocumentId,Name,Data,ModifiedTime")] Document document)
+        public async Task<IActionResult> Edit(int id, /*[Bind("DocumentId,Name,Data")]*/ DocumentEditViewModel documentEditViewModel)
         {
-            if (id != document.DocumentId)
+            if (id != documentEditViewModel.DocumentId)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                var prevFile = await _context.DocumentFiles
+                                .SingleOrDefaultAsync(m => m.DocumentFileId == documentEditViewModel.DocumentId);
+                var newFile = new DocumentFile();
+                newFile.Name = documentEditViewModel.Name;
+                newFile.ModifiedTime = DateTime.Now;
+                using (var memoryStream = new MemoryStream())
+                {
+                    await documentEditViewModel.Data.CopyToAsync(memoryStream);
+                    newFile.Data = memoryStream.ToArray();
+                }
+
+                
+
+                var document = await _context.Documents
+                .SingleOrDefaultAsync(m => m.DocumentId == id);
+                document.File = newFile;
+
+                newFile.OwnerDocumentId = document.DocumentId;
+                _context.Add(newFile);
+
+
                 try
                 {
                     _context.Update(document);
@@ -144,7 +185,7 @@ namespace PDM.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(document);
+            return View(documentEditViewModel);
         }
 
         // GET: Documents/Delete/5
@@ -172,12 +213,12 @@ namespace PDM.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var document = await _context.Documents.Include(m=>m.File).SingleOrDefaultAsync(m => m.DocumentId == id);
-            var file = await _context.DocumentFiles.Include(m => m.PrevVersion).SingleOrDefaultAsync(m => m.DocumentFileId == document.File.DocumentFileId);
+            var file = await _context.DocumentFiles/*.Include(m => m.PrevVersion)*/.SingleOrDefaultAsync(m => m.DocumentFileId == document.File.DocumentFileId);
             DocumentFile nextFile = null;
             do
             {
-                if(file.PrevVersion != null)
-                    nextFile = await _context.DocumentFiles.Include(m => m.PrevVersion).SingleOrDefaultAsync(m => m.DocumentFileId == file.PrevVersion.DocumentFileId);
+                //if(file.PrevVersion != null)
+                //    nextFile = await _context.DocumentFiles.Include(m => m.PrevVersion).SingleOrDefaultAsync(m => m.DocumentFileId == file.PrevVersion.DocumentFileId);
 
                 _context.DocumentFiles.Remove(file);
                 if (nextFile == null)

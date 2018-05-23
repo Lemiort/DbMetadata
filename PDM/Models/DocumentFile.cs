@@ -15,7 +15,7 @@ namespace PDM.Models
 
         public DateTime ModifiedTime { get; set; }
 
-        public DocumentFile PrevVersion { get; set; }
+        public int OwnerDocumentId { get; set; }
 
     }
 }
