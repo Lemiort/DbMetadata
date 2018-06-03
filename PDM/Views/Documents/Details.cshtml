@@ -1,13 +1,14 @@
 ﻿@model PDM.Models.Document
+@inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+<h2>@Localizer["Details"]</h2>
 
 <div>
-    <h4>Document</h4>
+    <h4>@Localizer["Document"]</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -21,7 +22,7 @@
             @Html.DisplayNameFor(model => model.File.Data)
         </dt>
         <dd>
-            <a asp-action="Download" asp-route-id="@Model.File.DocumentFileId">Download</a>
+            <a asp-action="Download" asp-route-id="@Model.File.DocumentFileId">@Localizer["Download"]</a>
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.File.ModifiedTime)
@@ -30,13 +31,13 @@
             @Html.DisplayFor(model => model.File.ModifiedTime)
         </dd>
     </dl>
-    <a asp-controller="Documents" asp-action="VersionsList" asp-route-id="@Model.DocumentId">All versions</a>
+    <a asp-controller="Documents" asp-action="VersionsList" asp-route-id="@Model.DocumentId">@Localizer["All versions"]</a>
     @*@if (Model.File.PrevVersion != null)
         {
             <a asp-action="Details" asp-route-id="@Model.File.PrevVersion.">Previous version</a>
         }*@
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.File.OwnerDocumentId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.File.OwnerDocumentId">@Localizer["Edit"]</a> |
+    <a asp-action="Index">@Localizer["Back to List"]</a>
 </div>

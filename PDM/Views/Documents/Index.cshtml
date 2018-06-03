@@ -1,14 +1,14 @@
 ﻿@model IEnumerable<PDM.Models.Document>
-
+@inject IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = Localizer["Индекс"];
 }
 
-<h4>Documents</h4>
+<h4>@Localizer["Документы"]</h4>
 
 @*<p>
-    <a asp-action="Create">Create New</a>
-</p>*@
+        <a asp-action="Create">Create New</a>
+    </p>*@
 <table class="table">
     <thead>
         <tr>
@@ -16,11 +16,11 @@
                 @Html.DisplayNameFor(model => model.File.Name)
             </th>
             @*<th>
-                @Html.DisplayNameFor(model => model.ModifiedTime)
-            </th>*@
+                    @Html.DisplayNameFor(model => model.ModifiedTime)
+                </th>*@
             @*<th>
-            @Html.DisplayNameFor(model => model.Data)
-        </th>*@
+                    @Html.DisplayNameFor(model => model.Data)
+                </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.File.ModifiedTime)
             </th>
@@ -28,23 +28,24 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.File.Name)
-            </td>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.Data)
-            </td>*@
-            <td>
-                @Html.DisplayFor(modelItem => item.File.ModifiedTime)
-            </td>
-            <td>
-                <a asp-controller="Documents" asp-action="Edit" asp-route-id="@item.DocumentId">Edit</a> |
-                <a asp-controller="Documents" asp-action="Details" asp-route-id="@item.DocumentId">Details</a> |
-                <a asp-controller="Documents" asp-action="Delete" asp-route-id="@item.DocumentId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.File.Name)
+                </td>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.Data)
+                    </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.File.ModifiedTime)
+                </td>
+                <td>
+                    <a asp-controller="Documents" asp-action="Edit" asp-route-id="@item.DocumentId">@Localizer["Редактировать"]</a> |
+                    <a asp-controller="Documents" asp-action="Details" asp-route-id="@item.DocumentId">@Localizer["Детали"]</a> |
+                    <a asp-controller="Documents" asp-action="Delete" asp-route-id="@item.DocumentId">@Localizer["Удалить"]</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

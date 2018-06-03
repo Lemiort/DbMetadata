@@ -1,20 +1,21 @@
 ﻿@model IEnumerable<PDM.Models.ProjectProperty>
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = Localizer["Index"];
 }
 
-<h4>Properties</h4>
+<h4>@Localizer["Свойства"]</h4>
 
 @*<p>
-    <a asp-action="Create">Create New</a>
-</p>*@
+        <a asp-action="Create">Create New</a>
+    </p>*@
 <table class="table">
     <thead>
         <tr>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.OwnerProject)
-            </th>
+            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
@@ -25,23 +26,24 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.OwnerProject.ProjectId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Value)
-            </td>
-            <td>
-                <a asp-controller="ProjectProperties" asp-action="Edit" asp-route-id="@item.ProjectPropertyId">Edit</a> |
-                <a asp-controller="ProjectProperties" asp-action="Details" asp-route-id="@item.ProjectPropertyId">Details</a> |
-                <a asp-controller="ProjectProperties" asp-action="Delete" asp-route-id="@item.ProjectPropertyId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.OwnerProject.ProjectId)
+                </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Value)
+                </td>
+                <td>
+                    <a asp-controller="ProjectProperties" asp-action="Edit" asp-route-id="@item.ProjectPropertyId">@Localizer["Редактировать"]</a> |
+                    <a asp-controller="ProjectProperties" asp-action="Details" asp-route-id="@item.ProjectPropertyId">@Localizer["Подробно"]</a> |
+                    <a asp-controller="ProjectProperties" asp-action="Delete" asp-route-id="@item.ProjectPropertyId">@Localizer["Удалить"]</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
